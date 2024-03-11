@@ -9,6 +9,8 @@ def importar_dados(API):
     df_dados = dt.criar_dados(API, df_deals)
     df_calendario = pd.read_csv('calendario.csv')
     df_metas = pd.read_csv('metas.csv')
+    df_metas['meta_valor_vendas_ganhas'] = df_metas['meta_valor_vendas_ganhas'].astype(str)
+    df_metas['meta_posvenda_valor_vendas'] = df_metas['meta_posvenda_valor_vendas'].astype(str)
     df_metas['meta_valor_vendas_ganhas'] = df_metas['meta_valor_vendas_ganhas'].str.replace(',', '')
     df_metas['meta_posvenda_valor_vendas'] = df_metas['meta_posvenda_valor_vendas'].str.replace(',', '')
     df_atividades = dt.criar_atividades(API)

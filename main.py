@@ -3,10 +3,9 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 import dataframe as dt
-@st.cache_data
+@st.cache_data(persist="disk")
 def importar_dados(API):
     df_deals = dt.criar_deals_id(API)
-    df_dados = dt.criar_dados(API, df_deals)
     df_calendario = pd.read_csv('calendario.csv')
     df_metas = pd.read_csv('metas.csv')
     df_metas['meta_valor_vendas_ganhas'] = df_metas['meta_valor_vendas_ganhas'].astype(str)
@@ -15,8 +14,11 @@ def importar_dados(API):
     df_metas['meta_posvenda_valor_vendas'] = df_metas['meta_posvenda_valor_vendas'].str.replace(',', '')
     df_atividades = dt.criar_atividades(API)
     df_users = dt.criar_usuários(API)
-    return df_deals,df_calendario,df_metas,df_atividades,df_users,df_dados
-
+    return df_deals,df_calendario,df_metas,df_atividades,df_users
+@st.cache_data(persist="disk")
+def importar_dados2(API,df_deals):
+    df_dados = dt.criar_dados(API, df_deals)
+    return df_dados
 
 def main():
     #Configuração página inicial
@@ -25,7 +27,8 @@ def main():
 
     API = st.text_input('API:')
     if API:
-        df_deals, df_calendario, df_metas, df_atividades, df_users, df_dados = importar_dados(API)
+        df_deals, df_calendario, df_metas, df_atividades, df_users = importar_dados(API)
+        df_dados = importar_dados2(API, df_deals)
         botao_dados = st.button('Recarregar Dados')
         if botao_dados:
             importar_dados.clear()
